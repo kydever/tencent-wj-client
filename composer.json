@@ -20,7 +20,7 @@
     "require": {
         "php": ">=8.0",
         "guzzlehttp/guzzle": "^7.4",
-        "hyperf/contract": "^2.2|^3.0",
+        "hyperf/utils": "^2.2|^3.0",
         "jetbrains/phpstorm-attributes": "^1.0",
         "pimple/pimple": "^3.5",
         "psr/simple-cache": "^1.0|^2.0|^3.0"
