@@ -1,5 +1,7 @@
-# component-creator
+# 腾讯问卷客户端
 
 ```
-composer create-project hyperf/component-creator
+composer require kydev/tencent-wj-client
 ```
+
+
