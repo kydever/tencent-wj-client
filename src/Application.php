@@ -16,6 +16,7 @@ use KY\Tencent\WJClient\Code\CodeProvider;
 use KY\Tencent\WJClient\Http\ClientProvider;
 use KY\Tencent\WJClient\Respondent\RespondentProvider;
 use KY\Tencent\WJClient\User\UserProvider;
+use KY\Tencent\WJClient\WebHook\WebHookProvider;
 use Pimple\Container;
 use Psr\SimpleCache\CacheInterface;
 
@@ -27,6 +28,7 @@ use Psr\SimpleCache\CacheInterface;
  * @property Http\Client $http
  * @property Respondent\Respondent $respondent
  * @property User\User $user
+ * @property WebHook\WebHook $webhook
  */
 class Application
 {
@@ -38,6 +40,7 @@ class Application
         ClientProvider::class,
         RespondentProvider::class,
         UserProvider::class,
+        WebHookProvider::class,
     ];
 
     /**

@@ -54,7 +54,7 @@ abstract class AbstractTestCase extends TestCase
             if ($this->isMock) {
                 $client = Mockery::mock(Client::class);
                 $client->shouldReceive('request')->withAnyArgs()->andReturnUsing(function ($method, $uri, $args) {
-                    return new Response(200, [], $this->getContent($uri, $args));
+                    return new Response(200, [], $this->getContent($uri, $method));
                 });
                 return $client;
             }
@@ -74,7 +74,7 @@ abstract class AbstractTestCase extends TestCase
         return new Factory($this->getConfig());
     }
 
-    protected function getContent(string $uri): string
+    protected function getContent(string $uri, string $method): string
     {
         $path = BASE_PATH . '/tests/json/';
         $maps = [
@@ -88,6 +88,18 @@ abstract class AbstractTestCase extends TestCase
             'api/sso/users/2' => file_get_contents($path . 'invalid_token.json'),
             'api/sso/code' => file_get_contents($path . 'code.json'),
             'api/surveys/9798596/respondent/access_list/batch' => file_get_contents($path . 'batch_add_access_list.json'),
+            'api/surveys/9798596/webhooks' => value(static function () use ($method, $path) {
+                return match ($method) {
+                    'POST' => file_get_contents($path . 'create_hook.json'),
+                    'GET' => file_get_contents($path . 'get_hook.json'),
+                };
+            }),
+            'api/surveys/9798596/webhooks/10013204' => value(static function () use ($method, $path) {
+                return match ($method) {
+                    'DELETE' => file_get_contents($path . 'delete_hook.json'),
+                    'GET' => file_get_contents($path . 'first_hook.json'),
+                };
+            }),
         ];
 
         $this->context[$uri] = true;

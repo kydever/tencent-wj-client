@@ -40,8 +40,8 @@ class Client implements ProviderInterface
 
     public function handleResponse(ResponseInterface $response): array
     {
-        // echo $response->getBody();
-        // echo PHP_EOL;
+        echo $response->getBody();
+        echo PHP_EOL;
         $ret = Json::decode((string) $response->getBody());
         if ($ret['code'] !== 'OK') {
             if ($ret['code'] === 'PermissionDenied' && $ret['error']['type'] === 'invalid_token') {
