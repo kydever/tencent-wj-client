@@ -46,8 +46,13 @@ class Factory
         }
 
         $http = $this->config['http'] ?? [];
+        $config = array_replace_recursive(['http' => $http], $config);
 
-        return new Application(array_replace_recursive(['http' => $http], $config));
+        return tap(new Application($config), static function (Application $app) use ($config) {
+            foreach ($config['providers'] ?? [] as $provider) {
+                $app->register($provider);
+            }
+        });
     }
 
     /**
@@ -60,6 +65,7 @@ class Factory
      *         'default' => [
      *             'app_id' => '',
      *             'app_secret' => '',
+     *             'providers' => [],
      *             'http' => [
      *                  'base_uri' => '',
      *                  'timeout' => 2,

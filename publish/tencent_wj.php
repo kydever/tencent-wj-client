@@ -19,6 +19,9 @@ return [
         'default' => [
             'app_id' => env('TENCENT_WJ_APPID', ''),
             'app_secret' => env('TENCENT_WJ_SECRET', ''),
+            'providers' => [
+                KY\Tencent\WJClient\Provider\SimpleCacheProvider::class,
+            ],
         ],
     ],
 ];

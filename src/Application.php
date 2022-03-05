@@ -11,13 +11,23 @@ declare(strict_types=1);
  */
 namespace KY\Tencent\WJClient;
 
+use KY\Tencent\WJClient\AccessToken\AccessTokenProvider;
+use KY\Tencent\WJClient\Http\ClientProvider;
 use Pimple\Container;
+use Psr\SimpleCache\CacheInterface;
 
+/**
+ * @property AccessToken\AccessToken $access_token
+ * @property Http\Client $http
+ * @property CacheInterface $cache
+ */
 class Application
 {
     private Container $container;
 
     private array $providers = [
+        AccessTokenProvider::class,
+        ClientProvider::class,
     ];
 
     /**
@@ -46,5 +56,10 @@ class Application
     public function __get(string $name)
     {
         return $this->container[$name] ?? null;
+    }
+
+    public function register(string $provider)
+    {
+        $this->container->register(new $provider());
     }
 }
