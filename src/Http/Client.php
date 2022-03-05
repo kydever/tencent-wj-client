@@ -31,6 +31,7 @@ class Client implements ProviderInterface
     {
         $config = $this->config;
         if ($token) {
+            $config[RequestOptions::QUERY]['appid'] = $token->getAppId();
             $config[RequestOptions::QUERY]['access_token'] = $token->getToken();
         }
 
@@ -40,13 +41,13 @@ class Client implements ProviderInterface
     public function handleResponse(ResponseInterface $response): array
     {
         $ret = Json::decode((string) $response->getBody());
-        if ($ret['code'] !== 0) {
+        if ($ret['code'] !== 'OK') {
             $code = (int) $ret['code'];
             if ($code >= 99991661 && $code <= 99991668) {
                 throw new TokenInvalidException();
             }
 
-            throw new RuntimeException($ret['msg'] ?? 'http request failed.', $ret['code']);
+            throw new RuntimeException($ret['error']['type'] ?? 'http request failed.');
         }
 
         return $ret;

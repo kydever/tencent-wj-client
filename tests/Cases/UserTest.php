@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace HyperfTest\Cases;
 
 use KY\Tencent\WJClient\AccessToken\AccessToken;
+use KY\Tencent\WJClient\Exception\RuntimeException;
 use KY\Tencent\WJClient\Factory;
 use Psr\SimpleCache\CacheInterface;
 
@@ -19,9 +20,9 @@ use Psr\SimpleCache\CacheInterface;
  * @internal
  * @coversNothing
  */
-class AccessTokenTest extends AbstractTestCase
+class UserTest extends AbstractTestCase
 {
-    public function testGetToken()
+    public function testUserRegister()
     {
         $container = $this->getContainer();
         $container->shouldReceive('has')->with(CacheInterface::class)->andReturnTrue();
@@ -30,19 +31,14 @@ class AccessTokenTest extends AbstractTestCase
         $cache->shouldReceive('set')->with(AccessToken::CACHE_KEY, \Mockery::any(), 7200)->once()->andReturnTrue();
         $app = $container->get(Factory::class)->make('default');
 
-        $token = $app->access_token->getToken();
-        $this->assertIsString($token);
-    }
+        try {
+            $result = $app->user->register('1', '李铭昕', 'https://en.gravatar.com/userimage/117090979/5a6aa84ba4e7893285cbb5578a033a9a.jpg?size=200');
 
-    public function testGetTokenFromCache()
-    {
-        $container = $this->getContainer();
-        $container->shouldReceive('has')->with(CacheInterface::class)->andReturnTrue();
-        $container->shouldReceive('get')->with(CacheInterface::class)->andReturn($cache = \Mockery::mock(CacheInterface::class));
-        $cache->shouldReceive('get')->with(AccessToken::CACHE_KEY)->once()->andReturn($uuid = uniqid());
-        $app = $container->get(Factory::class)->make('default');
-
-        $token = $app->access_token->getToken();
-        $this->assertSame($token, $uuid);
+            $this->assertIsArray($result);
+            $this->assertArrayHasKey('user_id', $result);
+            $this->assertArrayHasKey('respondent_id', $result);
+        } catch (RuntimeException $exception) {
+            $this->assertSame('openid_existed', $exception->getMessage());
+        }
     }
 }

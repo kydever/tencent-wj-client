@@ -9,11 +9,12 @@ declare(strict_types=1);
  * @contact  group@hyperf.io
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
-namespace KY\Tencent\WJClient;
+namespace KY\Tencent\WJClient\Exception;
 
-interface AccessTokenInterface
+class RequestException extends RuntimeException
 {
-    public function getToken(bool $refresh = false): string;
-
-    public function getAppId(): string;
+    public static function throwException()
+    {
+        throw new RequestException('Request Failed.');
+    }
 }

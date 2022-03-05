@@ -15,7 +15,7 @@ use GuzzleHttp\RequestOptions;
 use Hyperf\Utils\Codec\Json;
 use KY\Tencent\WJClient\AccessTokenInterface;
 use KY\Tencent\WJClient\Config\Config;
-use KY\Tencent\WJClient\Exception\RuntimeException;
+use KY\Tencent\WJClient\Exception\RequestException;
 use KY\Tencent\WJClient\Http\Client;
 use KY\Tencent\WJClient\ProviderInterface;
 use Psr\SimpleCache\CacheInterface;
@@ -53,7 +53,7 @@ class AccessToken implements AccessTokenInterface, ProviderInterface
 
         $result = Json::decode((string) $response->getBody());
         if (empty($result['data']['access_token']) || empty($result['data']['expires_in'])) {
-            throw new RuntimeException('Request Token Failed.');
+            RequestException::throwException();
         }
 
         $this->cache->set(
@@ -63,5 +63,10 @@ class AccessToken implements AccessTokenInterface, ProviderInterface
         );
 
         return $result['data']['access_token'];
+    }
+
+    public function getAppId(): string
+    {
+        return $this->config->getAppId();
     }
 }

@@ -80,6 +80,7 @@ abstract class AbstractTestCase extends TestCase
                 $result['data']['access_token'] = uniqid();
                 return Json::encode($result);
             }),
+            'api/sso/users' => file_get_contents($path . 'user_register.json'),
         ];
 
         $this->context[$uri] = true;
