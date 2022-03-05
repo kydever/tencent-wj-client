@@ -50,8 +50,8 @@ abstract class AbstractTestCase extends TestCase
         $container->shouldReceive('make')->with(Client::class, Mockery::any())->andReturnUsing(function ($_, $args) {
             if ($this->isMock) {
                 $client = Mockery::mock(Client::class);
-                $client->shouldReceive('request')->andReturnUsing(function ($method, $uri, $args) {
-                    return new Response(200, [], $this->getContent($uri));
+                $client->shouldReceive('request')->withAnyArgs()->andReturnUsing(function ($method, $uri, $args) {
+                    return new Response(200, [], $this->getContent($uri, $args));
                 });
                 return $client;
             }
@@ -81,6 +81,8 @@ abstract class AbstractTestCase extends TestCase
                 return Json::encode($result);
             }),
             'api/sso/users' => file_get_contents($path . 'user_register.json'),
+            'api/sso/users/1' => file_get_contents($path . 'user_info.json'),
+            'api/sso/users/2' => file_get_contents($path . 'invalid_token.json'),
         ];
 
         $this->context[$uri] = true;

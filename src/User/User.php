@@ -33,6 +33,31 @@ class User implements ProviderInterface
     }
 
     /**
+     * 读取用户信息.
+     * @see https://wj.qq.com/docs/openapi/sso/get_user
+     */
+    #[ArrayShape([
+        'openid' => 'string',
+        'nickname' => 'string',
+        'avatar' => 'string',
+        'user_id' => 'int',
+        'respondent_id' => 'int',
+    ])]
+    public function info(string $openid): array
+    {
+        $result = $this->request(
+            'GET',
+            'api/sso/users/' . $openid,
+        );
+
+        if (empty($result['data']['user_id']) || empty($result['data']['respondent_id'])) {
+            RequestException::throwException();
+        }
+
+        return $result['data'];
+    }
+
+    /**
      * 注册账户.
      * @see https://wj.qq.com/docs/openapi/sso/create_user
      */

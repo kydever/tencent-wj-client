@@ -42,8 +42,7 @@ class Client implements ProviderInterface
     {
         $ret = Json::decode((string) $response->getBody());
         if ($ret['code'] !== 'OK') {
-            $code = (int) $ret['code'];
-            if ($code >= 99991661 && $code <= 99991668) {
+            if ($ret['code'] === 'PermissionDenied') {
                 throw new TokenInvalidException();
             }
 
