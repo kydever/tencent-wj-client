@@ -35,14 +35,11 @@ abstract class AbstractTestCase extends TestCase
 {
     protected bool $isMock = true;
 
-    protected array $context = [];
-
     protected ?string $token = null;
 
     protected function tearDown(): void
     {
         Mockery::close();
-        $this->context = [];
     }
 
     protected function getContainer(): Mockery\MockInterface|ContainerInterface
@@ -88,23 +85,25 @@ abstract class AbstractTestCase extends TestCase
             'api/sso/users/2' => file_get_contents($path . 'invalid_token.json'),
             'api/sso/code' => file_get_contents($path . 'code.json'),
             'api/surveys/9798596/respondent/access_list/batch' => file_get_contents($path . 'batch_add_access_list.json'),
-            'api/surveys/9798596/webhooks' => value(static function () use ($method, $path) {
+            'api/surveys/9798596/webhooks' => static function () use ($method, $path) {
                 return match ($method) {
                     'POST' => file_get_contents($path . 'create_hook.json'),
                     'GET' => file_get_contents($path . 'get_hook.json'),
                 };
-            }),
-            'api/surveys/9798596/webhooks/10013204' => value(static function () use ($method, $path) {
+            },
+            'api/surveys/9798596/webhooks/10013204' => static function () use ($method, $path) {
                 return match ($method) {
                     'DELETE' => file_get_contents($path . 'delete_hook.json'),
                     'GET' => file_get_contents($path . 'first_hook.json'),
                 };
-            }),
+            },
         ];
 
-        $this->context[$uri] = true;
-
-        return $maps[$uri];
+        $body = $maps[$uri];
+        if ($body instanceof \Closure) {
+            return $body();
+        }
+        return $body;
     }
 
     protected function getConfig(): ConfigInterface
