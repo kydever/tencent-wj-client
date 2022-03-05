@@ -23,6 +23,7 @@ use Psr\SimpleCache\CacheInterface;
  * @property AccessToken\AccessToken $access_token
  * @property CacheInterface $cache
  * @property Code\Code $code
+ * @property Config\Config $config
  * @property Http\Client $http
  * @property Respondent\Respondent $respondent
  * @property User\User $user
