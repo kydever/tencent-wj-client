@@ -11,7 +11,6 @@ declare(strict_types=1);
  */
 namespace HyperfTest\Cases;
 
-use KY\Tencent\WJClient\AccessToken\AccessToken;
 use KY\Tencent\WJClient\Exception\RuntimeException;
 use KY\Tencent\WJClient\Exception\TokenInvalidException;
 use KY\Tencent\WJClient\Factory;
@@ -52,8 +51,8 @@ class UserTest extends AbstractTestCase
         $container = $this->getContainer();
         $container->shouldReceive('has')->with(CacheInterface::class)->andReturnTrue();
         $container->shouldReceive('get')->with(CacheInterface::class)->andReturn($cache = \Mockery::mock(CacheInterface::class));
-        $cache->shouldReceive('get')->with(AccessToken::CACHE_KEY)->twice()->andReturn('xxx');
-        $cache->shouldReceive('set')->with(AccessToken::CACHE_KEY, \Mockery::any(), 7200)->once()->andReturnTrue();
+        $cache->shouldReceive('get')->with(\Mockery::any())->twice()->andReturn('xxx');
+        $cache->shouldReceive('set')->with(\Mockery::any(), \Mockery::any(), 7200)->once()->andReturnTrue();
         $app = $container->get(Factory::class)->make('default');
 
         $this->expectException(TokenInvalidException::class);

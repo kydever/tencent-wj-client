@@ -22,7 +22,7 @@ use Psr\SimpleCache\CacheInterface;
 
 class AccessToken implements AccessTokenInterface, ProviderInterface
 {
-    public const CACHE_KEY = 'ky:tencent_wj:access_token';
+    public const CACHE_KEY_PREFIX = 'ky:tencent_wj:access_token';
 
     public function __construct(protected Config $config, protected Client $client, protected CacheInterface $cache)
     {
@@ -35,7 +35,7 @@ class AccessToken implements AccessTokenInterface, ProviderInterface
 
     public function getToken(bool $refresh = false): string
     {
-        if (! $refresh && $token = $this->cache->get(self::CACHE_KEY)) {
+        if (! $refresh && $token = $this->cache->get($this->getCacheKey())) {
             return $token;
         }
 
@@ -57,7 +57,7 @@ class AccessToken implements AccessTokenInterface, ProviderInterface
         }
 
         $this->cache->set(
-            self::CACHE_KEY,
+            $this->getCacheKey(),
             $result['data']['access_token'],
             max($result['data']['expires_in'], 60)
         );
@@ -68,5 +68,15 @@ class AccessToken implements AccessTokenInterface, ProviderInterface
     public function getAppId(): string
     {
         return $this->config->getAppId();
+    }
+
+    protected function getCacheKey(): string
+    {
+        $appid = $this->getAppId();
+        if ($appid) {
+            return self::CACHE_KEY_PREFIX . ':' . $appid;
+        }
+
+        return self::CACHE_KEY_PREFIX;
     }
 }

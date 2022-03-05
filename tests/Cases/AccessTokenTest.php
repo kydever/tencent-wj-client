@@ -11,7 +11,6 @@ declare(strict_types=1);
  */
 namespace HyperfTest\Cases;
 
-use KY\Tencent\WJClient\AccessToken\AccessToken;
 use KY\Tencent\WJClient\Factory;
 use Psr\SimpleCache\CacheInterface;
 
@@ -26,8 +25,8 @@ class AccessTokenTest extends AbstractTestCase
         $container = $this->getContainer();
         $container->shouldReceive('has')->with(CacheInterface::class)->andReturnTrue();
         $container->shouldReceive('get')->with(CacheInterface::class)->andReturn($cache = \Mockery::mock(CacheInterface::class));
-        $cache->shouldReceive('get')->with(AccessToken::CACHE_KEY)->once()->andReturnNull();
-        $cache->shouldReceive('set')->with(AccessToken::CACHE_KEY, \Mockery::any(), 7200)->once()->andReturnTrue();
+        $cache->shouldReceive('get')->with(\Mockery::any())->once()->andReturnNull();
+        $cache->shouldReceive('set')->with(\Mockery::any(), \Mockery::any(), 7200)->once()->andReturnTrue();
         $app = $container->get(Factory::class)->make('default');
 
         $token = $app->access_token->getToken();
@@ -39,7 +38,7 @@ class AccessTokenTest extends AbstractTestCase
         $container = $this->getContainer();
         $container->shouldReceive('has')->with(CacheInterface::class)->andReturnTrue();
         $container->shouldReceive('get')->with(CacheInterface::class)->andReturn($cache = \Mockery::mock(CacheInterface::class));
-        $cache->shouldReceive('get')->with(AccessToken::CACHE_KEY)->once()->andReturn($uuid = uniqid());
+        $cache->shouldReceive('get')->with(\Mockery::any())->once()->andReturn($uuid = uniqid());
         $app = $container->get(Factory::class)->make('default');
 
         $token = $app->access_token->getToken();
