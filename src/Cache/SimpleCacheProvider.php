@@ -9,7 +9,7 @@ declare(strict_types=1);
  * @contact  group@hyperf.io
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
-namespace KY\Tencent\WJClient\Provider;
+namespace KY\Tencent\WJClient\Cache;
 
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
@@ -24,8 +24,11 @@ class SimpleCacheProvider implements ServiceProviderInterface
 
     public function register(Container $pimple)
     {
-        if ($this->container->has(CacheInterface::class)) {
-            $pimple['cache'] = $this->container->get(CacheInterface::class);
+        if (! $this->container->has(CacheInterface::class)) {
+            $pimple['cache'] = new NullCache();
+            return;
         }
+
+        $pimple['cache'] = $this->container->get(CacheInterface::class);
     }
 }

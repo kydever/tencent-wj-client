@@ -22,7 +22,8 @@ class AccessTokenProvider implements ServiceProviderInterface
     {
         $pimple[AccessToken::getName()] = fn () => new AccessToken(
             $pimple[Config::getName()],
-            $pimple[Client::getName()]
+            $pimple[Client::getName()],
+            $pimple['cache']
         );
     }
 }

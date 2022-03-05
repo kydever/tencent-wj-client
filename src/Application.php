@@ -60,6 +60,6 @@ class Application
 
     public function register(string $provider)
     {
-        $this->container->register(new $provider());
+        $this->container->register(make($provider));
     }
 }

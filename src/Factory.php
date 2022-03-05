@@ -59,6 +59,7 @@ class Factory
      * @return [
      *     'http' => [
      *         'base_uri' => '',
+     *         'http_errors' => false,
      *         'timeout' => 2,
      *     ],
      *     'applications' => [
