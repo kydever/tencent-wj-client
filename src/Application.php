@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace KY\Tencent\WJClient;
 
 use KY\Tencent\WJClient\AccessToken\AccessTokenProvider;
+use KY\Tencent\WJClient\Code\CodeProvider;
 use KY\Tencent\WJClient\Http\ClientProvider;
 use KY\Tencent\WJClient\User\UserProvider;
 use Pimple\Container;
@@ -20,6 +21,7 @@ use Psr\SimpleCache\CacheInterface;
 /**
  * @property AccessToken\AccessToken $access_token
  * @property CacheInterface $cache
+ * @property Code\Code $code
  * @property Http\Client $http
  * @property User\User $user
  */
@@ -29,6 +31,7 @@ class Application
 
     private array $providers = [
         AccessTokenProvider::class,
+        CodeProvider::class,
         ClientProvider::class,
         UserProvider::class,
     ];

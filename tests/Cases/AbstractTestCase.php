@@ -21,11 +21,13 @@ use Hyperf\Contract\ConfigInterface;
 use Hyperf\Di\Container;
 use Hyperf\Utils\ApplicationContext;
 use Hyperf\Utils\Codec\Json;
+use KY\Tencent\WJClient\AccessToken\AccessToken;
 use KY\Tencent\WJClient\Cache\SimpleCacheProvider;
 use KY\Tencent\WJClient\Factory;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
+use Psr\SimpleCache\CacheInterface;
 
 /**
  * Class AbstractTestCase.
@@ -35,6 +37,8 @@ abstract class AbstractTestCase extends TestCase
     protected bool $isMock = true;
 
     protected array $context = [];
+
+    protected ?string $token = null;
 
     protected function tearDown(): void
     {
@@ -83,6 +87,7 @@ abstract class AbstractTestCase extends TestCase
             'api/sso/users' => file_get_contents($path . 'user_register.json'),
             'api/sso/users/1' => file_get_contents($path . 'user_info.json'),
             'api/sso/users/2' => file_get_contents($path . 'invalid_token.json'),
+            'api/sso/code' => file_get_contents($path . 'code.json'),
         ];
 
         $this->context[$uri] = true;
@@ -125,5 +130,27 @@ abstract class AbstractTestCase extends TestCase
             ->make();
 
         Dotenv::create($repository, [BASE_PATH])->load();
+    }
+
+    protected function getAppWithoutCache()
+    {
+        $container = $this->getContainer();
+        $container->shouldReceive('has')->with(CacheInterface::class)->andReturnFalse();
+        return $container->get(Factory::class)->make('default');
+    }
+
+    protected function getAppWithCache()
+    {
+        $container = $this->getContainer();
+        $container->shouldReceive('has')->with(CacheInterface::class)->andReturnTrue();
+        $container->shouldReceive('get')->with(CacheInterface::class)->andReturn($cache = \Mockery::mock(CacheInterface::class));
+        $cache->shouldReceive('get')->with(AccessToken::CACHE_KEY)->andReturnUsing(function () {
+            return $this->token;
+        });
+        $cache->shouldReceive('set')->with(AccessToken::CACHE_KEY, \Mockery::any(), 7200)->andReturnUsing(function ($key, $token) {
+            $this->token = $token;
+            return true;
+        });
+        return $container->get(Factory::class)->make('default');
     }
 }

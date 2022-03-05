@@ -60,11 +60,4 @@ class UserTest extends AbstractTestCase
 
         $app->user->info('2');
     }
-
-    protected function getAppWithoutCache()
-    {
-        $container = $this->getContainer();
-        $container->shouldReceive('has')->with(CacheInterface::class)->andReturnFalse();
-        return $container->get(Factory::class)->make('default');
-    }
 }
