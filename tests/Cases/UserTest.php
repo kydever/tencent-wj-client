@@ -60,4 +60,15 @@ class UserTest extends AbstractTestCase
 
         $app->user->info('2');
     }
+
+    public function testBatchAddAccessList()
+    {
+        $app = $this->getAppWithCache();
+
+        $res = $app->user->info('1');
+
+        $res = $app->respondent->batchAddAccessList(9798596, [$res['respondent_id']]);
+
+        $this->assertTrue($res);
+    }
 }

@@ -27,8 +27,8 @@ class CodeTest extends AbstractTestCase
 
         $this->assertIsString($result);
 
-        // $result = $app->code->getCode($info['respondent_id']);
-        //
-        // $this->assertIsString($result);
+        $result = $app->code->getCode($info['respondent_id']);
+
+        $this->assertIsString($result);
     }
 }

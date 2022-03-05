@@ -88,6 +88,7 @@ abstract class AbstractTestCase extends TestCase
             'api/sso/users/1' => file_get_contents($path . 'user_info.json'),
             'api/sso/users/2' => file_get_contents($path . 'invalid_token.json'),
             'api/sso/code' => file_get_contents($path . 'code.json'),
+            'api/surveys/9798596/respondent/access_list/batch' => file_get_contents($path . 'batch_add_access_list.json'),
         ];
 
         $this->context[$uri] = true;
